@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://linikerwambaster.github.io/imperio-esquadrias/sitemap.xml
