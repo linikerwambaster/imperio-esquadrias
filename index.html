@@ -219,6 +219,12 @@ h2 em,h1 em{font-style:normal;color:var(--azul2);position:relative;white-space:n
 .modelo-corpo{padding:12px 14px 14px;border-top:1px solid var(--linha);display:flex;flex-direction:column;gap:5px;flex:1}
 .modelo-tags{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font:500 10.5px var(--fm);letter-spacing:.04em;text-transform:uppercase;color:var(--txt2)}
 .modelo-tags .l25{background:var(--gelo);color:var(--azul-esc);padding:2px 7px;border-radius:999px}
+.linhas{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding:14px 18px;margin:-4px 0 24px;border-radius:16px;background:#fff;box-shadow:inset 0 0 0 1px var(--linha);font-size:14px;color:var(--txt2)}
+.linhas-tit{font:700 14px var(--fc);color:var(--grafite)}
+.linha-item{display:flex;align-items:center;gap:10px}
+.linha-item b{color:var(--grafite)}
+.linha-num{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--gelo);color:var(--azul-esc);font:700 14px var(--fm)}
+.linhas small{font-size:12px;opacity:.8}
 .modelo h3{font-size:17px;font-weight:800;font-stretch:108%;line-height:1.1}
 .modelo p{margin:0;color:var(--txt2);font-size:13px;flex:1}
 .modelo .btn{margin-top:10px;min-height:42px;font-size:13.5px;padding:0 12px}
@@ -505,7 +511,7 @@ footer ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
   <div class="wrap">
     <div class="cab rv">
       <div><span class="rotulo mono">Catálogo da fábrica · <span id="totalModelos">88</span> modelos</span><h2 id="t-prod">Escolhe o modelo. <em>A gente entrega.</em></h2></div>
-      <p class="sub">Portas e janelas de alumínio em branco, preto e brilhante, muitos modelos também na Linha 25. Toca na foto para ver de perto e pede o preço no WhatsApp.</p>
+      <p class="sub">Portas e janelas de alumínio em branco, preto e brilhante. Janelas na Linha 20 e na Linha 25. Toca na foto para ver de perto e pede o preço no WhatsApp.</p>
     </div>
     <div class="filtros-cat rv">
       <div class="filtros rolagem" role="group" aria-label="Filtrar por tipo" id="fTipo">
@@ -522,6 +528,12 @@ footer ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
         <button type="button" aria-pressed="false" data-c="preto"><i class="bolinha preto"></i>Preto<small></small></button>
         <button type="button" aria-pressed="false" data-c="brilhante"><i class="bolinha brilhante"></i>Brilhante<small></small></button>
       </div>
+    </div>
+    <div class="linhas rv" role="note" aria-label="Diferença entre Linha 20 e Linha 25">
+      <b class="linhas-tit">Janelas: Linha 20 ou Linha 25?</b>
+      <span class="linha-item"><span class="linha-num">20</span><span><b>Linha 20:</b> fecho de nylon preto</span></span>
+      <span class="linha-item"><span class="linha-num">25</span><span><b>Linha 25:</b> fecho já embutido nas peças</span></span>
+      <small>Vale para vitrôs e venezianas.</small>
     </div>
     <div class="cat-grade" id="catGrade" aria-live="polite"></div>
     <div class="mais" id="mais"><button type="button" class="btn btn-linha" id="verMais">Ver mais modelos</button></div>
@@ -724,8 +736,10 @@ footer ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
   var TIPO = {porta:'Porta', correr:'Porta de correr', vitro:'Vitrô', veneziana:'Veneziana', maxim:'Maxim-ar, basculante e capelinha'};
   var COR = {branco:'Branco', preto:'Preto', brilhante:'Brilhante'}, CORF = {branco:'branca', preto:'preta', brilhante:'brilhante'};
   var ordem = VIT.map(function(id){ return porId[id]; }).filter(Boolean).concat(PR.filter(function(p){ return VIT.indexOf(p.id) < 0; }));
-  function nomeLongo(p){ return p.nome + ' ' + COR[p.cor].toLowerCase() + (p.l25 ? ' (Linha 25)' : '') + (/grade/i.test(p.extra) ? ', ' + p.extra.toLowerCase() : ''); }
-  function alt(p){ return p.nome + ' de alumínio na cor ' + CORF[p.cor] + (p.l25 ? ', Linha 25' : '') + (p.extra ? ', ' + p.extra.toLowerCase() : '') + ', Império Esquadrias'; }
+  var JANELA = {vitro:1, veneziana:1}, FECHO = {20:'fecho de nylon preto', 25:'fecho embutido nas peças'};
+  function linha(p){ return p.l25 ? 25 : (JANELA[p.tipo] ? 20 : 0); }
+  function nomeLongo(p){ return p.nome + ' ' + COR[p.cor].toLowerCase() + (linha(p) ? ' (Linha ' + linha(p) + ')' : '') + (/grade/i.test(p.extra) ? ', ' + p.extra.toLowerCase() : ''); }
+  function alt(p){ return p.nome + ' de alumínio na cor ' + CORF[p.cor] + (linha(p) ? ', Linha ' + linha(p) : '') + (p.extra ? ', ' + p.extra.toLowerCase() : '') + ', Império Esquadrias'; }
   function waLink(p){ return 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Olá! Vim pelo site e quero o preço deste modelo: ' + nomeLongo(p) + '.'); }
   function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
   document.getElementById('totalModelos').textContent = PR.length;
@@ -736,7 +750,7 @@ footer ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
   function cartaoModelo(p, k){
     return '<article class="modelo" style="animation-delay:' + (k % 12) * 35 + 'ms">' +
       '<button type="button" class="modelo-foto" data-id="' + p.id + '" aria-label="Ver de perto: ' + esc(nomeLongo(p)) + '"><img src="produtos/' + p.id + '-p.webp" alt="' + esc(alt(p)) + '" loading="lazy" decoding="async" width="' + Math.round(p.w * Math.min(1, 420 / Math.max(p.w, p.h))) + '" height="' + Math.round(p.h * Math.min(1, 420 / Math.max(p.w, p.h))) + '"><span class="zoom" aria-hidden="true"><svg><use href="#lupa-i"/></svg></span></button>' +
-      '<div class="modelo-corpo"><div class="modelo-tags"><i class="bolinha ' + p.cor + '"></i>' + COR[p.cor] + (p.l25 ? '<span class="l25">Linha 25</span>' : '') + '</div>' +
+      '<div class="modelo-corpo"><div class="modelo-tags"><i class="bolinha ' + p.cor + '"></i>' + COR[p.cor] + (linha(p) ? '<span class="l25">Linha ' + linha(p) + '</span>' : '') + '</div>' +
       '<h3>' + esc(p.nome) + '</h3><p>' + esc(p.extra || TIPO[p.tipo]) + '</p>' +
       '<a class="btn btn-wa" href="' + waLink(p) + '" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Preço no WhatsApp</a></div></article>';
   }
@@ -782,7 +796,7 @@ footer ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
     mLupa.style.backgroundImage = 'url(produtos/' + p.id + '.webp)';
     document.getElementById('mTipo').textContent = TIPO[p.tipo];
     document.getElementById('mNome').textContent = p.nome;
-    document.getElementById('mTags').innerHTML = '<span><i class="bolinha ' + p.cor + '"></i>' + COR[p.cor] + '</span>' + (p.l25 ? '<span>Linha 25</span>' : '') + (p.extra ? '<span>' + esc(p.extra) + '</span>' : '');
+    document.getElementById('mTags').innerHTML = '<span><i class="bolinha ' + p.cor + '"></i>' + COR[p.cor] + '</span>' + (linha(p) ? '<span>Linha ' + linha(p) + (JANELA[p.tipo] ? ' · ' + FECHO[linha(p)] : '') + '</span>' : '') + (p.extra ? '<span>' + esc(p.extra) + '</span>' : '');
     document.getElementById('mWa').href = waLink(p);
   }
   function abre(id, listaBase){
