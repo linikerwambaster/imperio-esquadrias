@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://linikerwambaster.github.io/imperio-esquadrias/sitemap.xml
+Sitemap: https://imperioesquadrilhasph.com.br/sitemap.xml
