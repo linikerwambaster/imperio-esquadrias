@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://imperioesquadrilhasph.com.br/sitemap.xml
+Sitemap: https://imperioesquadriasph.com.br/sitemap.xml
